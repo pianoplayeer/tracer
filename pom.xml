@@ -20,6 +20,11 @@
             <artifactId>aspectjrt</artifactId>
             <version>1.8.13</version>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.24</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -49,6 +54,7 @@
                 <artifactId>aspectj-maven-plugin</artifactId>
                 <version>1.11</version>
                 <configuration>
+                    <forceAjcCompile>true</forceAjcCompile>
                     <complianceLevel>1.8</complianceLevel>
                     <source>1.8</source>
                     <target>1.8</target>

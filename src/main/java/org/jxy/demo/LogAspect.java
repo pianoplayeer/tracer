@@ -10,14 +10,28 @@ import java.util.function.Supplier;
 
 @Aspect
 public class LogAspect {
-    private static ThreadLocal<Integer> cnt = ThreadLocal.withInitial(() -> 0);
-    static InheritableThreadLocal<String> abc = (InheritableThreadLocal<String>) InheritableThreadLocal.withInitial(String::new);
-    @Before("within(@TraceService *) && execution(* *(..)) && !staticinitialization(*) && !execution(static * *(..))")
-    public void addTemplate(JoinPoint point) {
-        Thread t = new Thread(() -> System.out.println(1));
+    private static InheritableThreadLocal<Integer> cnt = new InheritableThreadLocal<>();
 
-        System.out.printf("[LOG] %s: ", LocalDateTime.now());
-        System.out.print(" " + cnt.get());
-        cnt.set(cnt.get() + 1);
+    static {
+        cnt.set(0);
+    }
+
+    @Before("within(@TraceService *) && execution(* *(..)) && !staticinitialization(*) && !execution(static * *(..))")
+    public synchronized void addTemplate(JoinPoint point) {
+        Thread t = new Thread(() -> {
+            System.out.println(Thread.currentThread().toString() + cnt.get() + " ");
+            cnt.set(cnt.get() + 2);
+        });
+        t.start();
+
+        // System.out.printf("[LOG] %s: ", LocalDateTime.now());
+        System.out.print(Thread.currentThread().toString() + cnt.get() + " ");
+        // cnt.set(cnt.get() + 1);
+        try {
+            Thread.sleep(1000);
+            System.out.print(Thread.currentThread().toString() + cnt.get() + " ");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
