@@ -3,41 +3,45 @@ package org.jxy.tracer.trace;
 
 import lombok.Data;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Data
 public class TraceContext {
-    // ctxId: {[traceId]:[spanId]}
-    private String ctxId;
-
     private long traceId;
 
-    // spanId: {(parentSpanId.)[curSpan]}
+    // spanId: {parent.spanId.x}
     private String spanId;
 
     private AtomicInteger childSpan;
 
     private LocalDateTime traceStartTime;
-    private long startMillisTime;
-    private long endMillisTime;
+    private LocalDateTime traceEndTime;
 
     private String methodName;
 
-    public TraceContext(long traceId) {
+    public TraceContext(long traceId, String methodName) {
         this.traceId = traceId;
-        this.spanId = "0";
+        this.spanId = "" + traceId;
+        this.methodName = methodName;
 
-        ctxId = traceId + ":" + spanId;
         childSpan = new AtomicInteger(0);
+    }
+
+    public TraceContext newChildContext(String curMethod) {
+        TraceContext child = new TraceContext(traceId, curMethod);
+        child.setSpanId(spanId + "." + childSpan.getAndIncrement());
+
+        return child;
     }
 
     @Override
     public String toString() {
-        return "{" + "id: " + ctxId +
+        return "{" + "trace span id: " + spanId +
                     ", method: " + methodName +
                     ", start time: " + traceStartTime +
-                    ", time cost: " + (endMillisTime - startMillisTime) + " ms" +
+                    ", time cost: " + Duration.between(traceStartTime, traceEndTime).toMillis() + " ms" +
                 "}";
 
     }

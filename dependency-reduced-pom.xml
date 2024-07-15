@@ -31,6 +31,7 @@
         <version>1.11</version>
         <executions>
           <execution>
+            <phase>process-classes</phase>
             <goals>
               <goal>compile</goal>
             </goals>
@@ -39,14 +40,36 @@
             </configuration>
           </execution>
         </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>1.8.13</version>
+          </dependency>
+          <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjtools</artifactId>
+            <version>1.8.13</version>
+          </dependency>
+          <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.24</version>
+          </dependency>
+        </dependencies>
         <configuration>
+          <forceAjcCompile>true</forceAjcCompile>
           <complianceLevel>1.8</complianceLevel>
+          <sources />
           <source>1.8</source>
           <target>1.8</target>
           <showWeaveInfo>true</showWeaveInfo>
           <Xlint>ignore</Xlint>
           <encoding>UTF-8</encoding>
           <skip>true</skip>
+          <weaveDirectories>
+            <weaveDirectory>${project.build.directory}/classes</weaveDirectory>
+          </weaveDirectories>
         </configuration>
       </plugin>
     </plugins>
