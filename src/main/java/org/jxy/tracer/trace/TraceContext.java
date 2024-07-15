@@ -41,6 +41,7 @@ public class TraceContext {
         return "{" + "trace span id: " + spanId +
                     ", method: " + methodName +
                     ", start time: " + traceStartTime +
+                    ", end time: " + traceEndTime +
                     ", time cost: " + Duration.between(traceStartTime, traceEndTime).toMillis() + " ms" +
                 "}";
 
