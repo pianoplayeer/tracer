@@ -25,7 +25,7 @@ public class TraceAspect {
         TraceService traceService = m.getAnnotation(TraceService.class);
 
         String className = ((MethodSignature) point.getSignature()).getMethod().getDeclaringClass().toString();
-        String methodName = className + "#" + point.getSignature().getDeclaringTypeName();
+        String methodName = className + "#" + point.getSignature().getName();
 
         if (traceService != null) {
             Tracer.createTraceEnv(methodName);

@@ -1,9 +1,13 @@
 package org.jxy.tracer.trace;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.time.LocalDateTime;
 import java.util.Stack;
 
 public class Tracer {
+    private static final Logger logger = LogManager.getLogger(Tracer.class);
     private static InheritableThreadLocal<TraceContext> localContext = new InheritableThreadLocal<>();
     private static ThreadLocal<Stack<TraceContext>> localContextStack = new ThreadLocal<>();
 
@@ -19,6 +23,11 @@ public class Tracer {
 
     public static void createContext(String methodName) {
         TraceContext ctx = getCurrentContext().newChildContext(methodName);
+
+        Stack<TraceContext> ctxStack = localContextStack.get();
+        if (ctxStack == null) {
+            localContextStack.set(new Stack<>());
+        }
 
         localContextStack.get().push(ctx);
         localContext.set(ctx);
@@ -39,7 +48,7 @@ public class Tracer {
     }
 
     public static void logTrace() {
-        System.out.println(getCurrentContext());
+        logger.info(getCurrentContext());
     }
 
     public static void endCurrentTrace() {
